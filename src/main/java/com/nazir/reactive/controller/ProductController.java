@@ -84,4 +84,9 @@ public class ProductController {
         return productService.deleteAllProducts();
     }
 
+    @GetMapping(value = "/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    @Operation(summary = "Stream all products reactively (SSE)")
+    public Flux<Product> streamProducts() {
+        return productService.getAllProducts().delayElements(Duration.ofSeconds(1));
+    }
 }
