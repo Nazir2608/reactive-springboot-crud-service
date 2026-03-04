@@ -23,7 +23,9 @@ import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.math.BigDecimal;
 import java.time.Duration;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/products")
@@ -89,4 +91,42 @@ public class ProductController {
     public Flux<Product> streamProducts() {
         return productService.getAllProducts().delayElements(Duration.ofSeconds(1));
     }
+
+    @GetMapping("/{id}/name")
+    public Mono<String> getProductName(@PathVariable Long id) {
+        return productService.getProductById(id).map(product -> product.getName().toUpperCase());
+    }
+
+    @GetMapping("/{id}/related")
+    public Flux<Product> getRelatedProducts(@PathVariable Long id) {
+        return productService.getProductById(id).flatMapMany(product -> productService.getProductsByCategory(product.getCategory()));
+
+    }
+
+    @GetMapping("/expensive")
+    public Flux<Product> getExpensiveProducts(@RequestParam BigDecimal minPrice) {
+        return productService.getAllProducts().filter(p -> p.getPrice().compareTo(minPrice) >= 0);
+    }
+
+    @GetMapping("/names")
+    public Flux<String> getAllProductNames() {
+        return productService.getAllProducts().map(Product::getName);
+    }
+
+    @GetMapping("/top3")
+    public Flux<Product> getTop3() {
+        return productService.getAllProducts().take(3);
+
+    }
+
+    @GetMapping("/as-list")
+    public Mono<List<Product>> getAllAsList() {
+        return productService.getAllProducts().collectList();
+    }
+
+    @GetMapping("/count")
+    public Mono<Long> countProducts() {
+        return productService.getAllProducts().count();
+    }
+
 }
