@@ -23,6 +23,8 @@ import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.Duration;
+
 @RestController
 @RequestMapping("/api/v1/products")
 @RequiredArgsConstructor
@@ -46,8 +48,7 @@ public class ProductController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Get product by ID")
-    public Mono<Product> getProductById(
-            @Parameter(description = "Product ID") @PathVariable String id) {
+    public Mono<Product> getProductById(@Parameter(description = "Product ID") @PathVariable Long id) {
         return productService.getProductById(id);
     }
 
@@ -59,23 +60,20 @@ public class ProductController {
 
     @GetMapping("/search")
     @Operation(summary = "Search products by name")
-    public Flux<Product> searchProducts(
-            @Parameter(description = "Search keyword") @RequestParam String name) {
+    public Flux<Product> searchProducts(@Parameter(description = "Search keyword") @RequestParam String name) {
         return productService.searchProductsByName(name);
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "Update an existing product")
-    public Mono<Product> updateProduct(
-            @PathVariable String id,
-            @Valid @RequestBody ProductRequest request) {
+    public Mono<Product> updateProduct(@PathVariable Long id, @Valid @RequestBody ProductRequest request) {
         return productService.updateProduct(id, request);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Delete a product by ID")
-    public Mono<Void> deleteProduct(@PathVariable String id) {
+    public Mono<Void> deleteProduct(@PathVariable Long id) {
         return productService.deleteProduct(id);
     }
 
@@ -85,4 +83,5 @@ public class ProductController {
     public Mono<Void> deleteAllProducts() {
         return productService.deleteAllProducts();
     }
+
 }

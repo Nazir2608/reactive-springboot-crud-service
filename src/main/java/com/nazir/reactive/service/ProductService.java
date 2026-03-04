@@ -37,7 +37,7 @@ public class ProductService {
                 .doOnComplete(() -> log.info("Fetched all products"));
     }
 
-    public Mono<Product> getProductById(String id) {
+    public Mono<Product> getProductById(Long id) {
         return productRepository.findById(id).switchIfEmpty(Mono.error(new ProductNotFoundException(id)));
     }
 
@@ -49,7 +49,7 @@ public class ProductService {
         return productRepository.findByNameContainingIgnoreCase(name);
     }
 
-    public Mono<Product> updateProduct(String id, ProductRequest request) {
+    public Mono<Product> updateProduct(Long id, ProductRequest request) {
         return productRepository.findById(id)
                 .switchIfEmpty(Mono.error(new ProductNotFoundException(id)))
                 .flatMap(existing -> {
@@ -64,7 +64,7 @@ public class ProductService {
                 .doOnSuccess(p -> log.info("Updated product: {}", p.getId()));
     }
 
-    public Mono<Void> deleteProduct(String id) {
+    public Mono<Void> deleteProduct(Long id) {
         return productRepository.findById(id)
                 .switchIfEmpty(Mono.error(new ProductNotFoundException(id)))
                 .flatMap(productRepository::delete)

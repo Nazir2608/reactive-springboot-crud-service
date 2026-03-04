@@ -2,11 +2,12 @@ package com.nazir.reactive.model;
 
 import lombok.*;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.relational.core.mapping.Table;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-@Document(collection = "products")
+@Table("products")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -14,11 +15,11 @@ import java.time.LocalDateTime;
 public class Product {
 
     @Id
-    private String id;
+    private Long id;
 
     private String name;
     private String description;
-    private Double price;
+    private BigDecimal price;
     private Integer quantity;
     private String category;
 

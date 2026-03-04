@@ -1,10 +1,26 @@
+server:
+  port: 8080
+
 spring:
   application:
     name: reactive-springboot-crud-service
-  data:
-    mongodb:
-      uri: mongodb://localhost:27017/reactive_db
-      auto-index-creation: true
+
+  # R2DBC - Reactive MySQL connection
+  r2dbc:
+    url: r2dbc:mysql://localhost:3306/reactive_db
+    username: root
+    password: MySql@123
+    pool:
+      initial-size: 5
+      max-size: 20
+      max-idle-time: 30m
+
+  # Flyway uses JDBC (not R2DBC) just to run schema migrations
+  flyway:
+    url: jdbc:mysql://localhost:3306/reactive_db?createDatabaseIfNotExist=true
+    user: root
+    password: MySql@123
+    locations: classpath:db/migration
 
 springdoc:
   api-docs:
@@ -15,4 +31,4 @@ springdoc:
 logging:
   level:
     com.example.reactivecrud: DEBUG
-    org.springframework.data.mongodb: DEBUG
+    io.r2dbc: DEBUG
